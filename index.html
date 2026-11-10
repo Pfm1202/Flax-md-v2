@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FLAX-MD V2 · Pair Your WhatsApp</title>
+<meta name="theme-color" content="#0d0d1a">
+<link rel="icon" href="https://files.catbox.moe/viz0lg.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@600;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0d1a; --bg2:#141428; --card:rgba(24,24,48,.72); --line:rgba(124,58,237,.28);
+  --violet:#7c3aed; --purple:#6d5aff; --lilac:#a78bfa; --text:#ecebff; --muted:#9a98c0;
+  --ok:#34d399; --err:#f87171;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{
+  font-family:'Inter',system-ui,sans-serif;color:var(--text);background:var(--bg);
+  background-image:
+    radial-gradient(900px 500px at 15% -10%,rgba(109,90,255,.28),transparent 60%),
+    radial-gradient(800px 500px at 100% 0%,rgba(124,58,237,.22),transparent 55%),
+    radial-gradient(700px 500px at 50% 110%,rgba(109,90,255,.18),transparent 60%);
+  background-attachment:fixed;
+  padding:max(20px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;align-items:center;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.5;
+  background-image:linear-gradient(rgba(124,58,237,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,.07) 1px,transparent 1px);
+  background-size:44px 44px;mask-image:radial-gradient(ellipse at center,#000 30%,transparent 75%);
+  -webkit-mask-image:radial-gradient(ellipse at center,#000 30%,transparent 75%);
+}
+.wrap{position:relative;width:100%;max-width:460px;display:flex;flex-direction:column;gap:16px}
+
+/* header */
+.brand{text-align:center;padding-top:8px}
+.logo{
+  width:84px;height:84px;border-radius:50%;object-fit:cover;margin:0 auto 14px;display:block;
+  border:2px solid var(--violet);box-shadow:0 0 0 6px rgba(124,58,237,.14),0 0 40px rgba(109,90,255,.55);
+  animation:float 5s ease-in-out infinite;background:var(--bg2);
+}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+h1{
+  font-family:'Orbitron',sans-serif;font-weight:800;font-size:clamp(26px,8vw,34px);letter-spacing:2px;
+  background:linear-gradient(90deg,#c4b5fd,#7c3aed 55%,#6d5aff);-webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.sub{color:var(--muted);font-size:13px;margin-top:6px;letter-spacing:.4px}
+.chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.chip{
+  display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:500;color:var(--lilac);
+  background:rgba(124,58,237,.12);border:1px solid var(--line);padding:6px 12px;border-radius:999px;
+}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 rgba(52,211,153,.7);animation:pulse 2s infinite}
+.dot.off{background:var(--err);animation:none}
+@keyframes pulse{70%{box-shadow:0 0 0 8px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
+
+/* cards */
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  box-shadow:0 20px 60px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.04);
+}
+.card h2{font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:1.5px;font-weight:600;color:#d8d3ff;margin-bottom:4px}
+.hint{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5}
+
+label{display:block;font-size:12px;font-weight:600;color:var(--lilac);margin-bottom:8px;letter-spacing:.5px;text-transform:uppercase}
+.row{display:flex;gap:8px}
+select,input{
+  font:inherit;color:var(--text);background:rgba(13,13,26,.8);border:1px solid var(--line);border-radius:12px;
+  padding:14px;outline:none;transition:border-color .2s,box-shadow .2s;min-width:0;
+}
+select{width:118px;flex:none;appearance:none;-webkit-appearance:none;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23a78bfa' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;padding-right:30px}
+input{flex:1;font-family:'IBM Plex Mono',monospace;font-size:16px;letter-spacing:.5px}
+input::placeholder{color:#55537a}
+select:focus,input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(109,90,255,.25)}
+option{background:#141428}
+
+.btn{
+  width:100%;margin-top:16px;padding:15px;border:0;border-radius:12px;cursor:pointer;color:#fff;
+  font:600 15px 'Inter',sans-serif;letter-spacing:.3px;
+  background:linear-gradient(135deg,var(--purple),var(--violet));
+  box-shadow:0 10px 30px rgba(109,90,255,.4);transition:transform .15s,box-shadow .2s,opacity .2s;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.btn:hover{transform:translateY(-1px);box-shadow:0 14px 36px rgba(109,90,255,.55)}
+.btn:active{transform:translateY(0)}
+.btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.btn.ghost{background:transparent;border:1px solid var(--line);box-shadow:none;color:var(--lilac);margin-top:10px}
+.btn.ghost:hover{background:rgba(124,58,237,.12);box-shadow:none}
+.spin{width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:rot .7s linear infinite;display:none}
+.loading .spin{display:inline-block}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+.msg{margin-top:12px;font-size:13px;padding:10px 12px;border-radius:10px;display:none;line-height:1.45}
+.msg.err{display:block;color:#fecaca;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3)}
+
+/* code view */
+#codeView,#doneView{display:none}
+.code{display:flex;justify-content:center;align-items:center;gap:6px;margin:6px 0 4px;flex-wrap:nowrap}
+.cell{
+  width:clamp(30px,9.2vw,38px);height:clamp(44px,13vw,54px);display:grid;place-items:center;border-radius:10px;
+  font:600 clamp(20px,6vw,26px) 'IBM Plex Mono',monospace;color:#fff;
+  background:linear-gradient(180deg,rgba(109,90,255,.28),rgba(124,58,237,.12));
+  border:1px solid rgba(167,139,250,.5);box-shadow:0 6px 18px rgba(109,90,255,.25);
+  animation:pop .4s both;
+}
+.sep{color:var(--lilac);font-weight:700;font-size:22px;padding:0 2px}
+@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.9)}to{opacity:1;transform:none}}
+.timer{height:4px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden;margin:16px 0 6px}
+.timer i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--purple),var(--violet));transform-origin:left;transition:transform 1s linear}
+.tmeta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.wait{display:flex;align-items:center;gap:10px;justify-content:center;margin-top:14px;font-size:13px;color:var(--lilac)}
+.wait .spin{display:inline-block;border-color:rgba(167,139,250,.3);border-top-color:var(--lilac)}
+
+/* steps */
+.steps{list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:12px}
+.steps li{counter-increment:s;display:flex;gap:12px;align-items:flex-start;font-size:14px;color:#cfcdf0;line-height:1.5}
+.steps li::before{
+  content:counter(s);flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+  font:700 12px 'Orbitron',sans-serif;color:#fff;background:linear-gradient(135deg,var(--purple),var(--violet));
+}
+.steps b{color:#fff;font-weight:600}
+
+/* done */
+.ok{width:76px;height:76px;border-radius:50%;margin:4px auto 14px;display:grid;place-items:center;
+  background:rgba(52,211,153,.12);border:2px solid var(--ok);box-shadow:0 0 40px rgba(52,211,153,.35);animation:pop .5s both}
+.ok svg{width:38px;height:38px;stroke:var(--ok);fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+#doneView{text-align:center}
+#doneView h2{font-size:18px;color:#fff}
+.cmd{display:inline-block;font-family:'IBM Plex Mono',monospace;background:rgba(124,58,237,.2);border:1px solid var(--line);padding:2px 9px;border-radius:7px;color:#fff}
+
+/* footer */
+.links{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.links a{
+  color:var(--lilac);text-decoration:none;font-size:12.5px;font-weight:500;padding:8px 14px;border-radius:999px;
+  border:1px solid var(--line);background:rgba(124,58,237,.08);transition:background .2s,color .2s;
+}
+.links a:hover{background:rgba(124,58,237,.25);color:#fff}
+footer{text-align:center;font-size:12px;color:#6f6d96;padding:4px 0 8px;line-height:1.7}
+footer b{font-family:'Orbitron',sans-serif;letter-spacing:1.5px;color:var(--lilac);font-weight:600}
+@media (max-width:380px){select{width:104px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+
+  <header class="brand">
+    <img class="logo" src="https://files.catbox.moe/viz0lg.jpg" alt="FLAX-MD logo" onerror="this.style.display='none'">
+    <h1>FLAX-MD V2</h1>
+    <p class="sub">Flax Dynamic Intelligence Matrix</p>
+    <div class="chips">
+      <span class="chip"><span class="dot" id="dot"></span><span id="online">Checking server…</span></span>
+      <span class="chip">⚡ 295+ commands</span>
+    </div>
+  </header>
+
+  <!-- STEP 1: number form -->
+  <section class="card" id="formView">
+    <h2>LINK YOUR WHATSAPP</h2>
+    <p class="hint">Enter the WhatsApp number you want the bot to run on. You'll get an 8-character code to link it.</p>
+    <label for="cc">WhatsApp number</label>
+    <div class="row">
+      <select id="cc" aria-label="Country code"></select>
+      <input id="num" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="77 123 4567" aria-label="Phone number">
+    </div>
+    <div class="msg" id="err"></div>
+    <button class="btn" id="go"><span class="spin"></span><span id="goTxt">Generate Pair Code</span></button>
+  </section>
+
+  <!-- STEP 2: code -->
+  <section class="card" id="codeView">
+    <h2>YOUR PAIR CODE</h2>
+    <p class="hint" id="forNum"></p>
+    <div class="code" id="code" aria-live="polite"></div>
+    <div class="timer"><i id="bar"></i></div>
+    <div class="tmeta"><span>Enter it quickly</span><span id="left">60s</span></div>
+    <button class="btn" id="copy">Copy Code</button>
+    <button class="btn ghost" id="again">Use a different number / new code</button>
+    <div class="wait"><span class="spin"></span><span>Waiting for you to link on WhatsApp…</span></div>
+  </section>
+
+  <!-- STEP 3: done -->
+  <section class="card" id="doneView">
+    <div class="ok"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+    <h2>BOT CONNECTED!</h2>
+    <p class="hint" style="margin:8px 0 0">Open WhatsApp and send <span class="cmd">.menu</span> to any chat to start.</p>
+    <button class="btn ghost" id="another">Pair another number</button>
+  </section>
+
+  <section class="card" id="howView">
+    <h2>HOW TO LINK</h2>
+    <p class="hint">Do this on the phone that has the number.</p>
+    <ol class="steps">
+      <li><span>Open <b>WhatsApp</b> → tap <b>Settings</b> (or the ⋮ menu on Android).</span></li>
+      <li><span>Tap <b>Linked devices</b> → <b>Link a device</b>.</span></li>
+      <li><span>Choose <b>Link with phone number instead</b>.</span></li>
+      <li><span>Type the <b>8-character code</b> shown above and wait for the bot's welcome message.</span></li>
+    </ol>
+  </section>
+
+  <div class="links">
+    <a href="https://t.me/flaxmalcom" target="_blank" rel="noopener">Telegram</a>
+    <a href="https://wa.me/263775597819" target="_blank" rel="noopener">WhatsApp</a>
+    <a href="https://www.tiktok.com/@flax_malcom_tech" target="_blank" rel="noopener">TikTok</a>
+    <a href="https://youtube.com/@flaxmalcom" target="_blank" rel="noopener">YouTube</a>
+    <a href="https://github.com/FlaxMalcom" target="_blank" rel="noopener">GitHub</a>
+  </div>
+
+  <footer>Powered by <b>GHOST DEVS</b><br>© 2026 Flax Malcom Dev</footer>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+
+  var COUNTRIES = [
+    ['🇿🇼 +263', '263'], ['🇿🇦 +27', '27'], ['🇿🇲 +260', '260'], ['🇧🇼 +267', '267'],
+    ['🇲🇿 +258', '258'], ['🇲🇼 +265', '265'], ['🇳🇦 +264', '264'], ['🇹🇿 +255', '255'],
+    ['🇰🇪 +254', '254'], ['🇺🇬 +256', '256'], ['🇳🇬 +234', '234'], ['🇬🇭 +233', '233'],
+    ['🇮🇳 +91', '91'], ['🇵🇰 +92', '92'], ['🇮🇩 +62', '62'], ['🇧🇷 +55', '55'],
+    ['🇬🇧 +44', '44'], ['🇺🇸 +1', '1'], ['🌍 Other', '']
+  ];
+  var cc = $('cc');
+  COUNTRIES.forEach(function (c) { var o = document.createElement('option'); o.textContent = c[0]; o.value = c[1]; cc.appendChild(o); });
+
+  var views = ['formView', 'codeView', 'doneView'];
+  function show(id) { views.forEach(function (v) { $(v).style.display = v === id ? 'block' : 'none'; }); $('howView').style.display = id === 'doneView' ? 'none' : 'block'; }
+  show('formView');
+
+  /* server status */
+  function ping() {
+    fetch('/ping').then(function (r) { return r.json(); }).then(function (d) {
+      $('dot').classList.remove('off');
+      $('online').textContent = 'Online · ' + (d.activesession || 0) + ' session' + (d.activesession === 1 ? '' : 's');
+    }).catch(function () { $('dot').classList.add('off'); $('online').textContent = 'Server offline'; });
+  }
+  ping(); setInterval(ping, 30000);
+
+  /* helpers */
+  function showErr(t) { var e = $('err'); e.textContent = t; e.className = 'msg err'; }
+  function clearErr() { $('err').className = 'msg'; }
+  function fullNumber() {
+    var n = $('num').value.replace(/\D/g, '');
+    if (!n) return '';
+    var code = cc.value;
+    if (code) { n = n.replace(/^0+/, ''); if (n.indexOf(code) === 0 && n.length > 11) n = n.slice(code.length); n = code + n; }
+    return n;
+  }
+
+  var timerId = null, pollId = null, token = 0, current = '';
+  function stopAll() { clearInterval(timerId); clearInterval(pollId); token++; }
+
+  function renderCode(raw) {
+    var c = String(raw).replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+    var box = $('code'); box.innerHTML = '';
+    c.split('').forEach(function (ch, i) {
+      if (i === 4) { var s = document.createElement('span'); s.className = 'sep'; s.textContent = '–'; box.appendChild(s); }
+      var d = document.createElement('div'); d.className = 'cell'; d.textContent = ch; d.style.animationDelay = (i * 45) + 'ms'; box.appendChild(d);
+    });
+    $('copy').dataset.code = c.slice(0, 4) + '-' + c.slice(4);
+  }
+
+  function startTimer(sec) {
+    var left = sec, bar = $('bar');
+    bar.style.transition = 'none'; bar.style.transform = 'scaleX(1)';
+    requestAnimationFrame(function () { bar.style.transition = 'transform 1s linear'; });
+    $('left').textContent = left + 's';
+    clearInterval(timerId);
+    timerId = setInterval(function () {
+      left--; bar.style.transform = 'scaleX(' + Math.max(left, 0) / sec + ')';
+      $('left').textContent = left > 0 ? left + 's' : 'Expired? Make a new code';
+      if (left <= 0) clearInterval(timerId);
+    }, 1000);
+  }
+
+  function poll(number, my) {
+    var tries = 0;
+    clearInterval(pollId);
+    pollId = setInterval(function () {
+      if (my !== token) return clearInterval(pollId);
+      if (++tries > 90) return clearInterval(pollId); // ~4.5 min
+      fetch('/status?number=' + number).then(function (r) { return r.json(); }).then(function (d) {
+        if (my !== token) return;
+        if (d.connected) { stopAll(); show('doneView'); ping(); }
+      }).catch(function () {});
+    }, 3000);
+  }
+
+  function generate() {
+    clearErr();
+    var n = fullNumber();
+    if (n.length < 8 || n.length > 15) return showErr('Enter a valid WhatsApp number (digits only, with country code).');
+    var btn = $('go'); btn.disabled = true; btn.classList.add('loading'); $('goTxt').textContent = 'Generating…';
+    stopAll(); var my = token; current = n;
+
+    fetch('/code?number=' + n).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+      .then(function (res) {
+        if (my !== token) return;
+        var d = res.d || {};
+        if (d.status === 'already_connected') { show('doneView'); return; }
+        if (!res.ok || !d.code) throw new Error(d.error || 'Could not get a code. Check the number and try again.');
+        $('forNum').textContent = 'Linking +' + n + ' — enter this code in WhatsApp:';
+        renderCode(d.code); show('codeView'); startTimer(60); poll(n, my);
+      })
+      .catch(function (e) { showErr(e.message || 'Something went wrong. Try again.'); })
+      .finally(function () { btn.disabled = false; btn.classList.remove('loading'); $('goTxt').textContent = 'Generate Pair Code'; });
+  }
+
+  $('go').addEventListener('click', generate);
+  $('num').addEventListener('keydown', function (e) { if (e.key === 'Enter') generate(); });
+  $('num').addEventListener('input', clearErr);
+  $('again').addEventListener('click', function () { stopAll(); show('formView'); });
+  $('another').addEventListener('click', function () { stopAll(); $('num').value = ''; show('formView'); });
+
+  $('copy').addEventListener('click', function () {
+    var b = this, t = b.dataset.code || '';
+    function ok() { b.textContent = 'Copied ✓'; setTimeout(function () { b.textContent = 'Copy Code'; }, 1800); }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok).catch(ok);
+    else { var ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) {} ta.remove(); ok(); }
+  });
+})();
+</script>
+</body>
+</html>
